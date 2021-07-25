@@ -1,40 +1,39 @@
+import { Browser } from "puppeteer";
 import { Page } from "puppeteer";
 import { PitcherScore } from './pitcher_score';
 import { HitterScore } from './hitter_score';
-// import '../extensions/array.extension';
+import '../extensions/array.extension';
 
 export * from './pitcher_score';
 export * from './hitter_score';
 
 export class Score {
-  static async pitcherTitleList(page: Page, target: string): Promise<string[]> {
+  static pitcherTitleList = async (page: Page, target: string) => {
     return await page.$$eval(target, (thList) => {
-      console.log("");
-      const scoreTitleList: (string| null)[] = thList.map((th) => th.textContent).filter((elm) => elm != "年" && elm != "チーム");
-      console.log("");
-      return scoreTitleList.slice(0, 16).removeNull();
+      const titleList = thList.map((th) => th.textContent).filter((elm) => elm != "年" && elm != "チーム");
+      return titleList.slice(0, 16);
     })
   }
 
-  static async hitterTitleList(page: Page, target: string): Promise<string[]> {
+  static hitterTitleList = async (page: Page, target: string) => {
     return await page.$$eval(target, (thList) => {
-      const scoreTitleList = thList.map((th) => th.textContent).filter((elm) => elm != "年" && elm != "チーム");
-      return scoreTitleList.slice(17, 34).removeNull();
+      const titleList = thList.map((th) => th.textContent).filter((elm) => elm != "年" && elm != "チーム");
+      return titleList.slice(17, 34);
     })
   }
 
-  static async pitcherScoreList(page: Page, target: string): Promise<PitcherScore[]> {
+  static pitcherScoreList = async (page: Page, target: string) => {
     return await page.$$eval(target, (thList) => {
       const scoreList = thList.map((th) => th.textContent).filter((elm) => elm != "エンゼルス");
       return [
-        new PitcherScore(scoreList.slice(0, 17), "2021"),
-        new PitcherScore(scoreList.slice(17, 34), "2020"),
-        new PitcherScore(scoreList.slice(34, 51), "2018")
+        // new PitcherScore(scoreList.slice(0, 17), "2021"),
+        // new PitcherScore(scoreList.slice(17, 34), "2020"),
+        // new PitcherScore(scoreList.slice(34, 51), "2018")
       ]
     });
   }
 
-  static async hitterScoreList(page: Page, target: string): Promise<HitterScore[]> {
+  static hitterScoreList = async (page: Page, target: string) => {
     return await page.$$eval(target, (thList) => {
       const scoreList = thList.map((th) => th.textContent).filter((elm) => elm != "エンゼルス");
       return [

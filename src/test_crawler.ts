@@ -1,6 +1,6 @@
 import { Browser } from "puppeteer";
 import { Page } from "puppeteer";
-// import './extensions/array.extension';
+import './extensions/array.extension';
 import { Score, PitcherScore, HitterScore } from './models/score';
 import { BaseCrawler } from "./base_crawler";
 
@@ -11,12 +11,12 @@ const scoreTarget = ".yjSMTseasonsscore > table > tbody > tr:not([class]) > td";
 export default class TestCrawler extends BaseCrawler {
   protected async crawl(_: Browser, page: Page) {
     await page.goto(url);
+    const score = new Score();
     const pitcherTitleList = await Score.pitcherTitleList(page, scoreTitleTarget);
     // const hitterTitleList = await Score.hitterTitleList(page, scoreTitleTarget);
     // const pitcherScoreList = await Score.pitcherScoreList(page, scoreTarget);
     // const hitterScoreList = await Score.hitterScoreList(page, scoreTarget);
     await console.log(pitcherTitleList);
-    print();
   }
 }
 
