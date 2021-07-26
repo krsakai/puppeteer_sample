@@ -1,4 +1,3 @@
-import '../extensions/array.extension';
 export class HitterScore {
   /// 年
   year: string;

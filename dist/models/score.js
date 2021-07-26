@@ -13,44 +13,62 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Score = void 0;
 const pitcher_score_1 = require("./pitcher_score");
 const hitter_score_1 = require("./hitter_score");
+const latest_pitcher_score_1 = require("./latest_pitcher_score");
+const latest_hitter_score_1 = require("./latest_hitter_score");
 __exportStar(require("./pitcher_score"), exports);
 __exportStar(require("./hitter_score"), exports);
+const textContent = (elm) => elm.textContent;
+const textListContent = (elmList) => elmList.map((elm) => elm.textContent);
+const titleElementFilter = (value) => value != "年" && value != "チーム";
+const scoreElementFilter = (value) => value != "エンゼルス";
 class Score {
-    static async pitcherTitleList(page, target) {
-        return await page.$$eval(target, (thList) => {
-            console.log("");
-            const scoreTitleList = thList.map((th) => th.textContent).filter((elm) => elm != "年" && elm != "チーム");
-            console.log("");
-            return scoreTitleList.slice(0, 16).removeNull();
-        });
-    }
-    static async hitterTitleList(page, target) {
-        return await page.$$eval(target, (thList) => {
-            const scoreTitleList = thList.map((th) => th.textContent).filter((elm) => elm != "年" && elm != "チーム");
-            return scoreTitleList.slice(17, 34).removeNull();
-        });
-    }
-    static async pitcherScoreList(page, target) {
-        return await page.$$eval(target, (thList) => {
-            const scoreList = thList.map((th) => th.textContent).filter((elm) => elm != "エンゼルス");
-            return [
-                new pitcher_score_1.PitcherScore(scoreList.slice(0, 17), "2021"),
-                new pitcher_score_1.PitcherScore(scoreList.slice(17, 34), "2020"),
-                new pitcher_score_1.PitcherScore(scoreList.slice(34, 51), "2018")
-            ];
-        });
-    }
-    static async hitterScoreList(page, target) {
-        return await page.$$eval(target, (thList) => {
-            const scoreList = thList.map((th) => th.textContent).filter((elm) => elm != "エンゼルス");
-            return [
-                new hitter_score_1.HitterScore(scoreList.slice(51, 69), "2021"),
-                new hitter_score_1.HitterScore(scoreList.slice(69, 87), "2020"),
-                new hitter_score_1.HitterScore(scoreList.slice(87, 105), "2019"),
-                new hitter_score_1.HitterScore(scoreList.slice(105, 123), "2018")
-            ];
-        });
-    }
 }
 exports.Score = Score;
+Score.pitcherTitleList = async (page, target) => {
+    const textList = await page.$$eval(target, textListContent);
+    const titleList = textList.filter(titleElementFilter);
+    return titleList.slice(0, 17);
+};
+Score.hitterTitleList = async (page, target) => {
+    const textList = await page.$$eval(target, textListContent);
+    const titleList = textList.filter(titleElementFilter);
+    return titleList.slice(17, 35);
+};
+Score.pitcherScoreList = async (page, target) => {
+    const textList = await page.$$eval(target, textListContent);
+    const scoreList = textList.filter(scoreElementFilter);
+    return [
+        new pitcher_score_1.PitcherScore(scoreList.slice(0, 17), "2021"),
+        new pitcher_score_1.PitcherScore(scoreList.slice(17, 34), "2020"),
+        new pitcher_score_1.PitcherScore(scoreList.slice(34, 51), "2018")
+    ];
+};
+Score.hitterScoreList = async (page, target) => {
+    const textList = await page.$$eval(target, textListContent);
+    const scoreList = textList.filter(scoreElementFilter);
+    return [
+        new hitter_score_1.HitterScore(scoreList.slice(51, 69), "2021"),
+        new hitter_score_1.HitterScore(scoreList.slice(69, 87), "2020"),
+        new hitter_score_1.HitterScore(scoreList.slice(87, 105), "2019"),
+        new hitter_score_1.HitterScore(scoreList.slice(105, 123), "2018")
+    ];
+};
+Score.latestPitcherScore = async (page, scoreTarget, dateTarget) => {
+    const scoreList = await page.$$eval(scoreTarget, textListContent);
+    const date = await page.$eval(dateTarget, textContent);
+    const aTag = await page.$(dateTarget);
+    const href = await (aTag === null || aTag === void 0 ? void 0 : aTag.getProperty('href'));
+    const url = await (href === null || href === void 0 ? void 0 : href.jsonValue());
+    scoreList.splice(0, 1);
+    return new latest_pitcher_score_1.LatestPitcherScore(scoreList, date !== null && date !== void 0 ? date : "", typeof url === 'string' ? url : "");
+};
+Score.latestHitterScore = async (page, scoreTarget, dateTarget) => {
+    const scoreList = await page.$$eval(scoreTarget, textListContent);
+    const date = await page.$eval(dateTarget, textContent);
+    const aTag = await page.$(dateTarget);
+    const href = await (aTag === null || aTag === void 0 ? void 0 : aTag.getProperty('href'));
+    const url = await (href === null || href === void 0 ? void 0 : href.jsonValue());
+    scoreList.splice(0, 1);
+    return new latest_hitter_score_1.LatestHitterScore(scoreList, date !== null && date !== void 0 ? date : "", typeof url === 'string' ? url : "");
+};
 //# sourceMappingURL=score.js.map

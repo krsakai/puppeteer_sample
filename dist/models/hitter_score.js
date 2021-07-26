@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HitterScore = void 0;
-require("../extensions/array.extension");
 class HitterScore {
     constructor(list, year) {
         const _list = list.removeNull();

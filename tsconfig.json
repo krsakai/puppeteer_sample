@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-      "target": "es2020",
+      "target": "es2018",
       "module": "commonjs",
       "outDir": "./dist/",
       // "declaration": true,
@@ -12,10 +12,11 @@
       "noImplicitReturns": false,
       "noFallthroughCasesInSwitch": false,
       "esModuleInterop": true,
-      "baseUrl": "./",
-      "paths": {
-        "#/*": ["src/*"]
-      },
+      "lib": ["DOM"],
+      // "baseUrl": "./",
+      // "paths": {
+      //   "#/*": ["src/*"]
+      // },
       "typeRoots": ["./src/types"],
   },
   "include": [
